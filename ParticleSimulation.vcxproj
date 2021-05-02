@@ -167,16 +167,22 @@
     </CudaCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="error_check.cpp" />
-    <ClCompile Include="particleInjector.cpp" />
+    <ClCompile Include="Source\HomeIface.cpp" />
+    <ClCompile Include="Source\SimulationIface.cpp" />
+    <ClCompile Include="Source\error_check.cpp" />
+    <ClCompile Include="Source\particleInjector.cpp" />
+    <ClCompile Include="Source\UserIface.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="error_check.h" />
-    <ClInclude Include="Header.cuh" />
-    <ClInclude Include="mouse.h" />
-    <ClInclude Include="parameters.h" />
-    <ClInclude Include="particle.h" />
-    <ClInclude Include="particleInjector.h" />
+    <ClInclude Include="Header\error_check.h" />
+    <ClInclude Include="Header\Cuda\Header.cuh" />
+    <ClInclude Include="Header\mouse.h" />
+    <ClInclude Include="Header\parameters.h" />
+    <ClInclude Include="Header\particle.h" />
+    <ClInclude Include="Header\particleInjector.h" />
+    <ClInclude Include="Header\HomeIface.h" />
+    <ClInclude Include="Header\SimulationIface.h" />
+    <ClInclude Include="Header\UserIface.h" />
   </ItemGroup>
   <ItemGroup>
     <CudaCompile Include="main.cu" />

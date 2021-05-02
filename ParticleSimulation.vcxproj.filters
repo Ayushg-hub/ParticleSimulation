@@ -15,30 +15,48 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="error_check.cpp">
+    <ClCompile Include="Source\error_check.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="particleInjector.cpp">
+    <ClCompile Include="Source\particleInjector.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\UserIface.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\HomeIface.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\SimulationIface.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="error_check.h">
+    <ClInclude Include="Header\error_check.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="particle.h">
+    <ClInclude Include="Header\particle.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="particleInjector.h">
+    <ClInclude Include="Header\particleInjector.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="parameters.h">
+    <ClInclude Include="Header\parameters.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="mouse.h">
+    <ClInclude Include="Header\mouse.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Header.cuh" />
+    <ClInclude Include="Header\Cuda\Header.cuh" />
+    <ClInclude Include="Header\UserIface.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Header\HomeIface.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Header\SimulationIface.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CudaCompile Include="main.cu" />

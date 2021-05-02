@@ -1,4 +1,4 @@
-#include "particleInjector.h"
+#include "../Header/particleInjector.h"
 
 const char* vertexshader =
 "#version 330 core\n"
