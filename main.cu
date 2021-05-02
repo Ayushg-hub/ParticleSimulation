@@ -2,14 +2,15 @@
 #include<GLFW/glfw3.h>
 #include<iostream>
 #include<cmath>
-#include"error_check.h"
+#include"Header/error_check.h"
 #include<chrono>
 #include<thread>
-#include"mouse.h"
-#include"particleInjector.h"
-#include"device_launch_parameters.h"
-#include<cuda_runtime.h>
-#include"parameters.h"
+#include"Header/mouse.h"
+#include"Header/particleInjector.h"
+#include"Header/parameters.h"
+
+//#include"device_launch_parameters.h"
+//#include<cuda_runtime.h>
 
 const char* vertexShader =
 "#version 330 core\n"

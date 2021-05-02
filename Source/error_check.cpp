@@ -1,6 +1,6 @@
-#include "error_check.h"
+#include "../Header/error_check.h"
 
-#include "error_check.h"
+#include "../Header/error_check.h"
 #include<iostream>
 
 void glclearError() {
