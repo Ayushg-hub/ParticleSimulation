@@ -1,5 +1,7 @@
 #pragma once
-class HomeIface
+#include"UserIface.h"
+class HomeIface:public UserIface
 {
+
 };
 

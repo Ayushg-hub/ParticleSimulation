@@ -167,11 +167,12 @@
     </CudaCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\ParticleSimulation.cpp" />
+    <ClCompile Include="Source\Renderer.cpp" />
     <ClCompile Include="Source\HomeIface.cpp" />
     <ClCompile Include="Source\SimulationIface.cpp" />
     <ClCompile Include="Source\error_check.cpp" />
     <ClCompile Include="Source\particleInjector.cpp" />
-    <ClCompile Include="Source\UserIface.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Header\error_check.h" />
@@ -183,6 +184,8 @@
     <ClInclude Include="Header\HomeIface.h" />
     <ClInclude Include="Header\SimulationIface.h" />
     <ClInclude Include="Header\UserIface.h" />
+    <ClInclude Include="Header\Renderer.h" />
+    <ClInclude Include="Header\ParticleSimulation.h" />
   </ItemGroup>
   <ItemGroup>
     <CudaCompile Include="main.cu" />
