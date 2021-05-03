@@ -2,7 +2,8 @@
 #include<glew/include/GL/glew.h>
 #include<GLFW/glfw3.h>
 #include<iostream>
-#include"particleInjector.h"
+#include"parameters.h"
+#include"ParticleSimulation.h"
 
 enum class mouseModes
 {
@@ -32,25 +33,34 @@ void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
     }
 }
 
-void handleMouseInputEvent(GLFWwindow* window,particleInjector &particleinjector)
+void handleMouseInputEvent(GLFWwindow* window,UserIface* UI)
 {
     double xPos{ 0 }, yPos{ 0 };
     glfwGetCursorPos(window, &xPos, &yPos);
     //std::cout << "(" << xPos << "," << yPos << ")" << std::endl;
-    if (mouseMode == mouseModes::PRESSED && count %5 == 0)
+    switch (UI->getIfaceType())
     {
-        //setting the right coordinate system
-        xPos = xPos - SCREEN_WIDTH / 2;
-        yPos = -(yPos - SCREEN_HEIGHT / 2);
+    case IfaceType::SIMULATION:
+        {
+            if (mouseMode == mouseModes::PRESSED && count % 5 == 0)
+            {
+                //setting the right coordinate system
+                xPos = xPos - SCREEN_WIDTH / 2;
+                yPos = -(yPos - SCREEN_HEIGHT / 2);
 
-        //normalizing
-        xPos = xPos /(float)(SCREEN_WIDTH / 2);
-        yPos = yPos/(float)(SCREEN_HEIGHT / 2);
+                //normalizing
+                xPos = xPos / (float)(SCREEN_WIDTH / 2);
+                yPos = yPos / (float)(SCREEN_HEIGHT / 2);
 
-        particleinjector.injectParticles(xPos, yPos);
-        std::cout << "CURRENTLY PRESSED" << std::endl;
+                ParticleSimulation* P = static_cast<ParticleSimulation*>(UI);
+                P->injectParticles(xPos, yPos);
+                std::cout << "CURRENTLY PRESSED" << std::endl;
+            }
+            count++;
+        }
+        break;
     }
-    count++;
+
 }
 
 //just a test function
