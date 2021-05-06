@@ -6,6 +6,7 @@
 enum class IfaceType
 {
 	SIMULATION,
+	HOME,
 	OTHER
 };
 
@@ -17,6 +18,7 @@ protected:
 		GLuint VBO;
 		GLuint IBO;
 		GLuint VAO;
+		GLuint Texture;
 		GLuint vertexShader;
 		GLuint fragmentShader;
 		GLuint shaderProgram;

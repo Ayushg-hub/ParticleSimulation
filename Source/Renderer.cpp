@@ -31,21 +31,18 @@ Renderer::Renderer()
         return ;
     }
 
-    UI = new ParticleSimulation();
+    UI = new HomeIface();
 }
 
 void Renderer::Start()
 {
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
     while (!glfwWindowShouldClose(window))
     {
         glClear(GL_COLOR_BUFFER_BIT);
 
-        handleMouseInputEvent(window, UI);
-
+        handleMouseInputEvent(window, &UI);
 
         /* 
         * cuda code - keep this here for later integration
