@@ -33,12 +33,12 @@ void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
     }
 }
 
-void handleMouseInputEvent(GLFWwindow* window,UserIface* UI)
+void handleMouseInputEvent(GLFWwindow* window,UserIface** UI)
 {
     double xPos{ 0 }, yPos{ 0 };
     glfwGetCursorPos(window, &xPos, &yPos);
     //std::cout << "(" << xPos << "," << yPos << ")" << std::endl;
-    switch (UI->getIfaceType())
+    switch ((*UI)->getIfaceType())
     {
     case IfaceType::SIMULATION:
         {
@@ -52,13 +52,34 @@ void handleMouseInputEvent(GLFWwindow* window,UserIface* UI)
                 xPos = xPos / (float)(SCREEN_WIDTH / 2);
                 yPos = yPos / (float)(SCREEN_HEIGHT / 2);
 
-                ParticleSimulation* P = static_cast<ParticleSimulation*>(UI);
+                ParticleSimulation* P = static_cast<ParticleSimulation*>(*UI);
                 P->injectParticles(xPos, yPos);
                 std::cout << "CURRENTLY PRESSED" << std::endl;
             }
             count++;
         }
         break;
+
+    case IfaceType::HOME:
+        {
+            if (mouseMode == mouseModes::PRESSED)
+            {
+                //setting the right coordinate system
+                xPos = xPos - SCREEN_WIDTH / 2;
+                yPos = -(yPos - SCREEN_HEIGHT / 2);
+
+                //normalizing
+                xPos = xPos / (float)(SCREEN_WIDTH / 2);
+                yPos = yPos / (float)(SCREEN_HEIGHT / 2);
+
+                if (xPos >= -0.8f && xPos <= -0.4f && yPos >= -0.2f && yPos <= 0.2f)
+                {
+                    delete (*UI);
+                    (*UI) = new ParticleSimulation();
+                    //HomeIface* P = static_cast<HomeIface*>(UI);
+                }
+            }
+        }
     }
 
 }
