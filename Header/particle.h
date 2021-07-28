@@ -17,6 +17,7 @@ struct particle
 	glm::vec3 m_velocity = glm::vec3(0.1f, -0.5f, 0.0f);
 	glm::vec3 m_accelaration = glm::vec3(0.0f, -0.5f, 0.0f);
 	float timestep{0.025f};
+	float mass{ 1 };
 	Collision collision;
 };
 

@@ -16,6 +16,7 @@ protected:
 	struct IDs
 	{
 		GLuint VBO;
+		GLuint instance_VBO;
 		GLuint IBO;
 		GLuint VAO;
 		GLuint Texture;

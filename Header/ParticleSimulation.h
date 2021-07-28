@@ -10,9 +10,10 @@ class ParticleSimulation:public SimulationIface
 {
 	const char* vertexshader =
 		"#version 330 core\n"
-		"layout(location = 0) in vec4 position;\n"
+		"layout(location = 0) in vec2 position;\n"
+		"layout(location = 1) in vec2 offset;\n"
 		"void main(){\n"
-		"gl_Position = position;\n"
+		"gl_Position = vec4(position + offset,1,1);\n"
 		"}\0\n";
 
 	const char* fragmentshader =
@@ -25,8 +26,14 @@ class ParticleSimulation:public SimulationIface
 	const std::string Type = "PARTICLE";
 
 	particle particles[MAX_PARTICLES];
-	float vertexBuffer[MAX_PARTICLES * ((NOOFTRIANGLES + 1) * 2)];
-	GLuint indexBuffer[MAX_PARTICLES * (NOOFTRIANGLES * 3)];
+	float positions[2 * MAX_PARTICLES]{};
+	/*float vertexBuffer[MAX_PARTICLES * ((NOOFTRIANGLES + 1) * 2)];
+	GLuint indexBuffer[MAX_PARTICLES * (NOOFTRIANGLES * 3)];*/
+
+	float vertexBuffer[(NOOFTRIANGLES + 1) * 2];
+	GLuint indexBuffer[(NOOFTRIANGLES * 3)];
+
+	float adjacanyMatrix[MAX_PARTICLES][MAX_PARTICLES]{};
 
 	//char* vertexshader;
 	//char* fragmentshader;
@@ -49,6 +56,7 @@ public:
 	void calcVelocity() override;
 	void calcAccelaration() override;
 
+	void calcAdjacencyMatrix();
 	void collisionCheck();
 	void updateVBPositions(glm::vec3 dist, unsigned int pos);
 	void injectParticles(float x, float y);
