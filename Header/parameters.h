@@ -1,5 +1,5 @@
 #pragma once
-#define MAX_PARTICLES 320
+#define MAX_PARTICLES 3200
 #define CIRCLESIZE 5
 #define NOOFTRIANGLES 10
 #define PI std::acos(-1)

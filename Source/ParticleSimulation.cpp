@@ -1,8 +1,10 @@
 #include<iostream>
 #include "../Header/ParticleSimulation.h"
 #include"../Header/error_check.h"
+#include<glm/gtx/norm.hpp>
+#include<vector>
 
-
+int c = 0;
 
 ParticleSimulation::ParticleSimulation()
 {
@@ -22,10 +24,10 @@ ParticleSimulation::ParticleSimulation()
     }
 
     //propagating the circle coordinates throughout the buffer
-    for (int i = 0; i < MAX_PARTICLES * ((NOOFTRIANGLES + 1) * 2); i++)
-    {
-        vertexBuffer[i] = vertexBuffer[i % ((NOOFTRIANGLES + 1) * 2)];
-    }
+    //for (int i = 0; i < MAX_PARTICLES * ((NOOFTRIANGLES + 1) * 2); i++)
+    //{
+    //    vertexBuffer[i] = vertexBuffer[i % ((NOOFTRIANGLES + 1) * 2)];
+    //}
 
     //setting up the index data;
 
@@ -47,13 +49,13 @@ ParticleSimulation::ParticleSimulation()
     }
     indexBuffer[3 * NOOFTRIANGLES - 1] = 1;
 
-    int second_last = indexBuffer[3 * NOOFTRIANGLES - 2];
-    for (int j = (NOOFTRIANGLES * 3); j < MAX_PARTICLES * (NOOFTRIANGLES * 3); j++)
-    {
-        indexBuffer[j] = indexBuffer[j % (NOOFTRIANGLES * 3)] + second_last + 1;
-        if (j % (NOOFTRIANGLES * 3) == (NOOFTRIANGLES * 3) - 1)
-            second_last = indexBuffer[j - 1];
-    }
+    //int second_last = indexBuffer[3 * NOOFTRIANGLES - 2];
+    //for (int j = (NOOFTRIANGLES * 3); j < MAX_PARTICLES * (NOOFTRIANGLES * 3); j++)
+    //{
+    //    indexBuffer[j] = indexBuffer[j % (NOOFTRIANGLES * 3)] + second_last + 1;
+    //    if (j % (NOOFTRIANGLES * 3) == (NOOFTRIANGLES * 3) - 1)
+    //        second_last = indexBuffer[j - 1];
+    //}
 
     //setting up the buffers
 
@@ -106,15 +108,22 @@ ParticleSimulation::ParticleSimulation()
 
     glGenBuffers(1, &ID.VBO);
     glBindBuffer(GL_ARRAY_BUFFER, ID.VBO);
-    //glBufferData(GL_ARRAY_BUFFER, 2 * (NOOFTRIANGLES + 1) * sizeof(float), vertexBuffer, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, 2 * (NOOFTRIANGLES + 1) * sizeof(float), vertexBuffer, GL_STATIC_DRAW);
 
     GLCALL(glGenBuffers(1, &ID.IBO));
     GLCALL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ID.IBO));
-    //GLCALL(glBufferData(GL_ELEMENT_ARRAY_BUFFER, 3 * NOOFTRIANGLES * sizeof(unsigned int), indexBuffer, GL_STATIC_DRAW));
+    GLCALL(glBufferData(GL_ELEMENT_ARRAY_BUFFER, 3 * NOOFTRIANGLES * sizeof(unsigned int), indexBuffer, GL_STATIC_DRAW));
 
+    GLCALL(glGenBuffers(1, &ID.instance_VBO));
 
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
+
+    glEnableVertexAttribArray(1);
+    glBindBuffer(GL_ARRAY_BUFFER, ID.instance_VBO);
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
+    glVertexAttribDivisor(1, 1);
+    
 
     glUseProgram(ID.shaderProgram);
 }
@@ -129,13 +138,15 @@ void ParticleSimulation::UpdateVertexBuffers()
     calcVelocity();
     calcPosition();
     collisionCheck();
+    
 }
 
 void ParticleSimulation::render()
 {
-    GLCALL(glBufferData(GL_ARRAY_BUFFER, count * ((NOOFTRIANGLES + 1) * 2) * sizeof(float), vertexBuffer, GL_STATIC_DRAW));
-    GLCALL(glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * (3 * NOOFTRIANGLES) * sizeof(unsigned int), indexBuffer, GL_STATIC_DRAW));
-    GLCALL(glDrawElements(GL_TRIANGLES, NOOFTRIANGLES * 3 * count, GL_UNSIGNED_INT, 0));
+    GLCALL(glBufferData(GL_ARRAY_BUFFER, count *  2 * sizeof(float), positions, GL_STATIC_DRAW));
+    //GLCALL(glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * (3 * NOOFTRIANGLES) * sizeof(unsigned int), indexBuffer, GL_STATIC_DRAW));
+    //GLCALL(glDrawElements(GL_TRIANGLES, NOOFTRIANGLES * 3 * count, GL_UNSIGNED_INT, 0));
+    GLCALL(glDrawElementsInstanced(GL_TRIANGLES,NOOFTRIANGLES*3,GL_UNSIGNED_INT,0,count))
 }
 
 void ParticleSimulation::calcPosition() 
@@ -161,8 +172,12 @@ void ParticleSimulation::calcPosition()
                 }
             }
             particles[pos].m_position = particles[pos].m_position + dist;
+            
+            //updating the instance buffer
+            positions[2*pos] = particles[pos].m_position.x;
+            positions[2*pos + 1] = particles[pos].m_position.y;
 
-            updateVBPositions(dist, pos);
+            //updateVBPositions(dist, pos);
         }
     }
 }
@@ -204,7 +219,33 @@ void ParticleSimulation::calcAccelaration()
             }
             else
             {
-                particles[pos].m_accelaration = glm::vec3(0.0f, -0.5f, 0.0f);
+                if (pos % 2 == 0)
+                    particles[pos].m_accelaration = glm::vec3(0.0f, 0.5f, 0.0f);
+                else
+                    particles[pos].m_accelaration = glm::vec3(0.0f, -0.5f, 0.0f);
+            }
+        }
+    }
+}
+
+void ParticleSimulation::calcAdjacencyMatrix()
+{
+    for (int i = 0; i < count; i++)
+    {
+        for (int j = i+1; j < count; j++)
+        {
+            float dx = (particles[i].m_position.x - particles[j].m_position.x) * SCREEN_WIDTH / 2.0;
+            float dy = (particles[i].m_position.y - particles[j].m_position.y) * SCREEN_HEIGHT / 2.0;
+            float sqrt_ = std::sqrt(dx*dx + dy*dy);
+
+            //checking cooldown
+            if (adjacanyMatrix[i][j] == -1.0 && sqrt_ < 2 * CIRCLESIZE)
+            {
+                continue;
+            }
+            else
+            {
+                adjacanyMatrix[i][j] = sqrt_;
             }
         }
     }
@@ -213,12 +254,28 @@ void ParticleSimulation::calcAccelaration()
 void ParticleSimulation::collisionCheck()
 {
     //unsigned int pos = blockDim.x * blockIdx.x + threadIdx.x;
+    calcAdjacencyMatrix();
+    std::vector<std::pair<unsigned int, unsigned int>> collindingPairs;
+
+    for (int i = 0; i < count; i++)
+    {
+        for (int j = i+1; j < count; j++)
+        {
+            if (adjacanyMatrix[i][j] <= 2*CIRCLESIZE && adjacanyMatrix[i][j]>=0)
+            {
+                collindingPairs.push_back(std::make_pair(i, j));
+                adjacanyMatrix[i][j] = -1.0f;
+            }
+        }
+    }
+
     for (int pos = 0; pos < count; pos++)
     {
         if (particles[pos].injected)
         {
-            bool WallCollisiony = particles[pos].m_position.y <= -1.0f || particles[pos].m_position.y >= 1.0f;
-            bool WallCollisionx = particles[pos].m_position.x <= -1.0f || particles[pos].m_position.x >= 1.0f;
+            bool WallCollisiony = (particles[pos].m_position.y <= -1.0f && particles[pos].m_velocity.y < 0) || (particles[pos].m_position.y >= 1.0f && particles[pos].m_velocity.y > 0);
+            bool WallCollisionx = (particles[pos].m_position.x <= -1.0f && particles[pos].m_velocity.x < 0) || (particles[pos].m_position.x >= 1.0f && particles[pos].m_velocity.x > 0);
+
             if ((WallCollisionx || WallCollisiony) && !particles[pos].collision.occur)
             {
                 if (WallCollisiony)
@@ -239,6 +296,18 @@ void ParticleSimulation::collisionCheck()
                 particles[pos].collision.occur = false;
             }
 
+            std::vector<std::pair<unsigned int, unsigned int>>::iterator itr = collindingPairs.begin();
+            while (!collindingPairs.empty() && itr->first == pos)
+            {      
+                std::swap(particles[itr->first].m_velocity, particles[itr->second].m_velocity);
+
+                //particles[itr->first].collision.occur = true;
+                //particles[itr->second].collision.occur = true;
+                
+                collindingPairs.erase(itr); 
+
+                itr = collindingPairs.begin();
+            }
         }
     }
 }
@@ -255,6 +324,59 @@ void ParticleSimulation::updateVBPositions(glm::vec3 dist, unsigned int pos)
     }
 }
 
+//void ParticleSimulation::injectParticles(float x, float y)
+//{
+//    if (count == MAX_PARTICLES)
+//        return;
+//
+//    particles[count].injected = true;
+//    particles[count].m_position = glm::vec3(x - (float)2.0 * CIRCLESIZE * 10.0 / 960.0, y, 1.0);
+//    for (unsigned int i = count * ((NOOFTRIANGLES + 1) * 2); i < (count + 1) * ((NOOFTRIANGLES + 1) * 2); i += 2)
+//    {
+//        vertexBuffer[i] = vertexBuffer[i] + particles[count].m_position.x;
+//        vertexBuffer[i + 1] = vertexBuffer[i + 1] + particles[count].m_position.y;
+//    }
+//    count++;
+//
+//    particles[count].injected = true;
+//    particles[count].m_position = glm::vec3(x - (float)2.0 * CIRCLESIZE * 5.0 / 960.0, y, 1.0);
+//    for (unsigned int i = count * ((NOOFTRIANGLES + 1) * 2); i < (count + 1) * ((NOOFTRIANGLES + 1) * 2); i += 2)
+//    {
+//        vertexBuffer[i] = vertexBuffer[i] + particles[count].m_position.x;
+//        vertexBuffer[i + 1] = vertexBuffer[i + 1] + particles[count].m_position.y;
+//    }
+//    count++;
+//
+//    particles[count].injected = true;
+//    particles[count].m_position = glm::vec3(x, y, 1.0);
+//    for (unsigned int i = count * ((NOOFTRIANGLES + 1) * 2); i < (count + 1) * ((NOOFTRIANGLES + 1) * 2); i += 2)
+//    {
+//        vertexBuffer[i] = vertexBuffer[i] + particles[count].m_position.x;
+//        vertexBuffer[i + 1] = vertexBuffer[i + 1] + particles[count].m_position.y;
+//    }
+//    count++;
+//
+//    particles[count].injected = true;
+//    particles[count].m_position = glm::vec3(x + (float)2.0 * CIRCLESIZE * 5.0 / 960.0, y, 1.0);
+//    for (unsigned int i = count * ((NOOFTRIANGLES + 1) * 2); i < (count + 1) * ((NOOFTRIANGLES + 1) * 2); i += 2)
+//    {
+//        vertexBuffer[i] = vertexBuffer[i] + particles[count].m_position.x;
+//        vertexBuffer[i + 1] = vertexBuffer[i + 1] + particles[count].m_position.y;
+//    }
+//    count++;
+//
+//    particles[count].injected = true;
+//    particles[count].m_position = glm::vec3(x + (float)2.0 * CIRCLESIZE * 10.0 / 960.0, y, 1.0);
+//    for (unsigned int i = count * ((NOOFTRIANGLES + 1) * 2); i < (count + 1) * ((NOOFTRIANGLES + 1) * 2); i += 2)
+//    {
+//        vertexBuffer[i] = vertexBuffer[i] + particles[count].m_position.x;
+//        vertexBuffer[i + 1] = vertexBuffer[i + 1] + particles[count].m_position.y;
+//    }
+//    count++;
+//
+//    std::cout << count;
+//}
+
 void ParticleSimulation::injectParticles(float x, float y)
 {
     if (count == MAX_PARTICLES)
@@ -262,47 +384,42 @@ void ParticleSimulation::injectParticles(float x, float y)
 
     particles[count].injected = true;
     particles[count].m_position = glm::vec3(x - (float)2.0 * CIRCLESIZE * 10.0 / 960.0, y, 1.0);
-    for (unsigned int i = count * ((NOOFTRIANGLES + 1) * 2); i < (count + 1) * ((NOOFTRIANGLES + 1) * 2); i += 2)
-    {
-        vertexBuffer[i] = vertexBuffer[i] + particles[count].m_position.x;
-        vertexBuffer[i + 1] = vertexBuffer[i + 1] + particles[count].m_position.y;
-    }
+    
+    positions[2*count] = particles[count].m_position.x;
+    positions[2*count+1] = particles[count].m_position.y;
+
     count++;
 
     particles[count].injected = true;
     particles[count].m_position = glm::vec3(x - (float)2.0 * CIRCLESIZE * 5.0 / 960.0, y, 1.0);
-    for (unsigned int i = count * ((NOOFTRIANGLES + 1) * 2); i < (count + 1) * ((NOOFTRIANGLES + 1) * 2); i += 2)
-    {
-        vertexBuffer[i] = vertexBuffer[i] + particles[count].m_position.x;
-        vertexBuffer[i + 1] = vertexBuffer[i + 1] + particles[count].m_position.y;
-    }
+
+    positions[2 * count] = particles[count].m_position.x;
+    positions[2 * count + 1] = particles[count].m_position.y;
+
     count++;
 
     particles[count].injected = true;
     particles[count].m_position = glm::vec3(x, y, 1.0);
-    for (unsigned int i = count * ((NOOFTRIANGLES + 1) * 2); i < (count + 1) * ((NOOFTRIANGLES + 1) * 2); i += 2)
-    {
-        vertexBuffer[i] = vertexBuffer[i] + particles[count].m_position.x;
-        vertexBuffer[i + 1] = vertexBuffer[i + 1] + particles[count].m_position.y;
-    }
+
+    positions[2 * count] = particles[count].m_position.x;
+    positions[2 * count + 1] = particles[count].m_position.y;
+
     count++;
 
     particles[count].injected = true;
     particles[count].m_position = glm::vec3(x + (float)2.0 * CIRCLESIZE * 5.0 / 960.0, y, 1.0);
-    for (unsigned int i = count * ((NOOFTRIANGLES + 1) * 2); i < (count + 1) * ((NOOFTRIANGLES + 1) * 2); i += 2)
-    {
-        vertexBuffer[i] = vertexBuffer[i] + particles[count].m_position.x;
-        vertexBuffer[i + 1] = vertexBuffer[i + 1] + particles[count].m_position.y;
-    }
+
+    positions[2 * count] = particles[count].m_position.x;
+    positions[2 * count + 1] = particles[count].m_position.y;
+
     count++;
 
     particles[count].injected = true;
     particles[count].m_position = glm::vec3(x + (float)2.0 * CIRCLESIZE * 10.0 / 960.0, y, 1.0);
-    for (unsigned int i = count * ((NOOFTRIANGLES + 1) * 2); i < (count + 1) * ((NOOFTRIANGLES + 1) * 2); i += 2)
-    {
-        vertexBuffer[i] = vertexBuffer[i] + particles[count].m_position.x;
-        vertexBuffer[i + 1] = vertexBuffer[i + 1] + particles[count].m_position.y;
-    }
+
+    positions[2 * count] = particles[count].m_position.x;
+    positions[2 * count + 1] = particles[count].m_position.y;
+
     count++;
 
     std::cout << count;
