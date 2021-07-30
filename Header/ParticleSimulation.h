@@ -5,6 +5,7 @@
 #include"parameters.h"
 #include"particle.h"
 #include<iostream>
+#include"ObjectManager.h"
 
 class ParticleSimulation:public SimulationIface
 {
@@ -34,6 +35,8 @@ class ParticleSimulation:public SimulationIface
 	GLuint indexBuffer[(NOOFTRIANGLES * 3)];
 
 	float adjacanyMatrix[MAX_PARTICLES][MAX_PARTICLES]{};
+
+	ObjectManager objMgr;
 
 	//char* vertexshader;
 	//char* fragmentshader;

@@ -11,121 +11,121 @@ ParticleSimulation::ParticleSimulation()
     //setting up the vertex data
     //getting the points of a circle
 
-    count = 0;
+    //count = 0;
 
-    vertexBuffer[0] = 0.0f;
-    vertexBuffer[1] = 0.0f;
-    int k = 2;
-    for (int angle = 0; angle < 360; angle += 360 / NOOFTRIANGLES)
-    {
-        vertexBuffer[k] = (CIRCLESIZE * std::cos((PI / (float)180) * angle) / (float)960);
-        vertexBuffer[k + 1] = (CIRCLESIZE * std::sin((PI / (float)180) * angle) / (float)540);
-        k += 2;
-    }
-
-    //propagating the circle coordinates throughout the buffer
-    //for (int i = 0; i < MAX_PARTICLES * ((NOOFTRIANGLES + 1) * 2); i++)
+    //vertexBuffer[0] = 0.0f;
+    //vertexBuffer[1] = 0.0f;
+    //int k = 2;
+    //for (int angle = 0; angle < 360; angle += 360 / NOOFTRIANGLES)
     //{
-    //    vertexBuffer[i] = vertexBuffer[i % ((NOOFTRIANGLES + 1) * 2)];
+    //    vertexBuffer[k] = (CIRCLESIZE * std::cos((PI / (float)180) * angle) / (float)960);
+    //    vertexBuffer[k + 1] = (CIRCLESIZE * std::sin((PI / (float)180) * angle) / (float)540);
+    //    k += 2;
     //}
 
-    //setting up the index data;
+    ////propagating the circle coordinates throughout the buffer
+    ////for (int i = 0; i < MAX_PARTICLES * ((NOOFTRIANGLES + 1) * 2); i++)
+    ////{
+    ////    vertexBuffer[i] = vertexBuffer[i % ((NOOFTRIANGLES + 1) * 2)];
+    ////}
 
-    indexBuffer[0] = 0;
-    unsigned int temp = 1;
-    for (int i = 0; i < 3 * NOOFTRIANGLES - 1; i++)
-    {
-        if (i % 3 == 0)
-            indexBuffer[i] = 0;
-        else if (i % 3 == 1)
-        {
-            indexBuffer[i] = temp;
-            temp++;
-        }
-        else
-        {
-            indexBuffer[i] = temp;
-        }
-    }
-    indexBuffer[3 * NOOFTRIANGLES - 1] = 1;
+    ////setting up the index data;
 
-    //int second_last = indexBuffer[3 * NOOFTRIANGLES - 2];
-    //for (int j = (NOOFTRIANGLES * 3); j < MAX_PARTICLES * (NOOFTRIANGLES * 3); j++)
+    //indexBuffer[0] = 0;
+    //unsigned int temp = 1;
+    //for (int i = 0; i < 3 * NOOFTRIANGLES - 1; i++)
     //{
-    //    indexBuffer[j] = indexBuffer[j % (NOOFTRIANGLES * 3)] + second_last + 1;
-    //    if (j % (NOOFTRIANGLES * 3) == (NOOFTRIANGLES * 3) - 1)
-    //        second_last = indexBuffer[j - 1];
+    //    if (i % 3 == 0)
+    //        indexBuffer[i] = 0;
+    //    else if (i % 3 == 1)
+    //    {
+    //        indexBuffer[i] = temp;
+    //        temp++;
+    //    }
+    //    else
+    //    {
+    //        indexBuffer[i] = temp;
+    //    }
+    //}
+    //indexBuffer[3 * NOOFTRIANGLES - 1] = 1;
+
+    ////int second_last = indexBuffer[3 * NOOFTRIANGLES - 2];
+    ////for (int j = (NOOFTRIANGLES * 3); j < MAX_PARTICLES * (NOOFTRIANGLES * 3); j++)
+    ////{
+    ////    indexBuffer[j] = indexBuffer[j % (NOOFTRIANGLES * 3)] + second_last + 1;
+    ////    if (j % (NOOFTRIANGLES * 3) == (NOOFTRIANGLES * 3) - 1)
+    ////        second_last = indexBuffer[j - 1];
+    ////}
+
+    ////setting up the buffers
+
+
+    ///// <summary>
+    ///// setting up shaders
+    ///// </summary>
+
+    //int success;
+    //char info[512];
+
+    //ID.vertexShader = glCreateShader(GL_VERTEX_SHADER);
+    //glShaderSource(ID.vertexShader, 1, &vertexshader, NULL);
+    //glCompileShader(ID.vertexShader);
+
+    //glGetShaderiv(ID.vertexShader, GL_COMPILE_STATUS, &success);
+    //if (!success)
+    //{
+    //    glGetShaderInfoLog(ID.vertexShader, 512, NULL, info);
+    //    std::cout << "compilation failed :: vertex shader " << std::endl << info << std::endl;
     //}
 
-    //setting up the buffers
+    //ID.fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+    //glShaderSource(ID.fragmentShader, 1, &fragmentshader, NULL);
+    //glCompileShader(ID.fragmentShader);
 
+    //glGetShaderiv(ID.fragmentShader, GL_COMPILE_STATUS, &success);
+    //if (!success)
+    //{
+    //    glGetShaderInfoLog(ID.fragmentShader, 512, NULL, info);
+    //    std::cout << "compilation failed :: fragment shader " << std::endl << info << std::endl;
+    //}
 
-    /// <summary>
-    /// setting up shaders
-    /// </summary>
+    //ID.shaderProgram = glCreateProgram();
+    //glAttachShader(ID.shaderProgram, ID.vertexShader);
+    //glAttachShader(ID.shaderProgram, ID.fragmentShader);
+    //glLinkProgram(ID.shaderProgram);
 
-    int success;
-    char info[512];
+    //glGetProgramiv(ID.shaderProgram, GL_LINK_STATUS, &success);
+    //if (!success)
+    //{
+    //    glGetProgramInfoLog(ID.shaderProgram, 512, NULL, info);
+    //    std::cout << "linking failed " << std::endl << info << std::endl;
+    //}
 
-    ID.vertexShader = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(ID.vertexShader, 1, &vertexshader, NULL);
-    glCompileShader(ID.vertexShader);
+    /////////////////////////////////////////////////////////////////////////////////////////////////
 
-    glGetShaderiv(ID.vertexShader, GL_COMPILE_STATUS, &success);
-    if (!success)
-    {
-        glGetShaderInfoLog(ID.vertexShader, 512, NULL, info);
-        std::cout << "compilation failed :: vertex shader " << std::endl << info << std::endl;
-    }
+    //glGenVertexArrays(1, &ID.VAO);
+    //glBindVertexArray(ID.VAO);
 
-    ID.fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(ID.fragmentShader, 1, &fragmentshader, NULL);
-    glCompileShader(ID.fragmentShader);
+    //glGenBuffers(1, &ID.VBO);
+    //glBindBuffer(GL_ARRAY_BUFFER, ID.VBO);
+    //glBufferData(GL_ARRAY_BUFFER, 2 * (NOOFTRIANGLES + 1) * sizeof(float), vertexBuffer, GL_STATIC_DRAW);
 
-    glGetShaderiv(ID.fragmentShader, GL_COMPILE_STATUS, &success);
-    if (!success)
-    {
-        glGetShaderInfoLog(ID.fragmentShader, 512, NULL, info);
-        std::cout << "compilation failed :: fragment shader " << std::endl << info << std::endl;
-    }
+    //GLCALL(glGenBuffers(1, &ID.IBO));
+    //GLCALL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ID.IBO));
+    //GLCALL(glBufferData(GL_ELEMENT_ARRAY_BUFFER, 3 * NOOFTRIANGLES * sizeof(unsigned int), indexBuffer, GL_STATIC_DRAW));
 
-    ID.shaderProgram = glCreateProgram();
-    glAttachShader(ID.shaderProgram, ID.vertexShader);
-    glAttachShader(ID.shaderProgram, ID.fragmentShader);
-    glLinkProgram(ID.shaderProgram);
+    //GLCALL(glGenBuffers(1, &ID.instance_VBO));
 
-    glGetProgramiv(ID.shaderProgram, GL_LINK_STATUS, &success);
-    if (!success)
-    {
-        glGetProgramInfoLog(ID.shaderProgram, 512, NULL, info);
-        std::cout << "linking failed " << std::endl << info << std::endl;
-    }
+    //glEnableVertexAttribArray(0);
+    //glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
 
-    ///////////////////////////////////////////////////////////////////////////////////////////////
+    //glEnableVertexAttribArray(1);
+    //glBindBuffer(GL_ARRAY_BUFFER, ID.instance_VBO);
+    //glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
+    //glVertexAttribDivisor(1, 1);
+    //
 
-    glGenVertexArrays(1, &ID.VAO);
-    glBindVertexArray(ID.VAO);
-
-    glGenBuffers(1, &ID.VBO);
-    glBindBuffer(GL_ARRAY_BUFFER, ID.VBO);
-    glBufferData(GL_ARRAY_BUFFER, 2 * (NOOFTRIANGLES + 1) * sizeof(float), vertexBuffer, GL_STATIC_DRAW);
-
-    GLCALL(glGenBuffers(1, &ID.IBO));
-    GLCALL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ID.IBO));
-    GLCALL(glBufferData(GL_ELEMENT_ARRAY_BUFFER, 3 * NOOFTRIANGLES * sizeof(unsigned int), indexBuffer, GL_STATIC_DRAW));
-
-    GLCALL(glGenBuffers(1, &ID.instance_VBO));
-
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
-
-    glEnableVertexAttribArray(1);
-    glBindBuffer(GL_ARRAY_BUFFER, ID.instance_VBO);
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
-    glVertexAttribDivisor(1, 1);
-    
-
-    glUseProgram(ID.shaderProgram);
+    //glUseProgram(ID.shaderProgram);
 }
 
 void ParticleSimulation::InputEventHandler()
@@ -134,19 +134,25 @@ void ParticleSimulation::InputEventHandler()
 
 void ParticleSimulation::UpdateVertexBuffers()
 {
-    calcAccelaration();
-    calcVelocity();
-    calcPosition();
-    collisionCheck();
+    //calcAccelaration();
+    //calcVelocity();
+    //calcPosition();
+    //collisionCheck();
+    
+    objMgr.calcAccelaration();
+    objMgr.calcVelocity();
+    objMgr.calcPosition();
+    objMgr.collisionCheck();
     
 }
 
 void ParticleSimulation::render()
 {
-    GLCALL(glBufferData(GL_ARRAY_BUFFER, count *  2 * sizeof(float), positions, GL_STATIC_DRAW));
+    //GLCALL(glBufferData(GL_ARRAY_BUFFER, count *  2 * sizeof(float), positions, GL_STATIC_DRAW));
     //GLCALL(glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * (3 * NOOFTRIANGLES) * sizeof(unsigned int), indexBuffer, GL_STATIC_DRAW));
     //GLCALL(glDrawElements(GL_TRIANGLES, NOOFTRIANGLES * 3 * count, GL_UNSIGNED_INT, 0));
-    GLCALL(glDrawElementsInstanced(GL_TRIANGLES,NOOFTRIANGLES*3,GL_UNSIGNED_INT,0,count))
+    //GLCALL(glDrawElementsInstanced(GL_TRIANGLES,NOOFTRIANGLES*3,GL_UNSIGNED_INT,0,count))
+    objMgr.renderObjects();
 }
 
 void ParticleSimulation::calcPosition() 
@@ -379,7 +385,7 @@ void ParticleSimulation::updateVBPositions(glm::vec3 dist, unsigned int pos)
 
 void ParticleSimulation::injectParticles(float x, float y)
 {
-    if (count == MAX_PARTICLES)
+    /*if (count == MAX_PARTICLES)
         return;
 
     particles[count].injected = true;
@@ -422,7 +428,9 @@ void ParticleSimulation::injectParticles(float x, float y)
 
     count++;
 
-    std::cout << count;
+    std::cout << count;*/
+
+    objMgr.injectParticles(x, y);
 }
 
 

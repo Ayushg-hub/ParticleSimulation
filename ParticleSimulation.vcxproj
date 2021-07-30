@@ -167,25 +167,30 @@
     </CudaCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\ObjectManager.cpp" />
+    <ClCompile Include="Source\Circle.cpp" />
+    <ClCompile Include="Source\Objects.cpp" />
     <ClCompile Include="Source\ParticleSimulation.cpp" />
     <ClCompile Include="Source\Renderer.cpp" />
     <ClCompile Include="Source\HomeIface.cpp" />
     <ClCompile Include="Source\SimulationIface.cpp" />
     <ClCompile Include="Source\error_check.cpp" />
-    <ClCompile Include="Source\particleInjector.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Header\Circle.h" />
+    <ClInclude Include="Header\common.h" />
     <ClInclude Include="Header\error_check.h" />
     <ClInclude Include="Header\Cuda\Header.cuh" />
     <ClInclude Include="Header\mouse.h" />
     <ClInclude Include="Header\parameters.h" />
     <ClInclude Include="Header\particle.h" />
-    <ClInclude Include="Header\particleInjector.h" />
     <ClInclude Include="Header\HomeIface.h" />
     <ClInclude Include="Header\SimulationIface.h" />
     <ClInclude Include="Header\UserIface.h" />
     <ClInclude Include="Header\Renderer.h" />
     <ClInclude Include="Header\ParticleSimulation.h" />
+    <ClInclude Include="Header\Objects.h" />
+    <ClInclude Include="Header\ObjectManager.h" />
   </ItemGroup>
   <ItemGroup>
     <CudaCompile Include="main.cu" />
