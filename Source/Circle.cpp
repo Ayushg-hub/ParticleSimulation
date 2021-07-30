@@ -130,11 +130,18 @@ void Circles::draw()
     glViewport(0, 0, SIM_VIEW_WIDTH, SIM_VIEW_HEIGHT );
     updateInstanceBuffer();
 
+    glBindBuffer(GL_ARRAY_BUFFER, ID.instance_VBO);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ID.VBO);
     glBindVertexArray(ID.VAO);
     glUseProgram(ID.shaderProgram);
 
     GLCALL(glBufferData(GL_ARRAY_BUFFER, count * 2 * sizeof(float), positions, GL_STATIC_DRAW));
-    GLCALL(glDrawElementsInstanced(GL_TRIANGLES, NOOFTRIANGLES * 3, GL_UNSIGNED_INT, 0, count))
+    GLCALL(glDrawElementsInstanced(GL_TRIANGLES, NOOFTRIANGLES * 3, GL_UNSIGNED_INT, 0, count));
+
+    glBindVertexArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    glUseProgram(0);
 }
 
 void Circles::injectParticles(float x, float y)
