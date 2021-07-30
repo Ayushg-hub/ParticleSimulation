@@ -21,7 +21,7 @@ void ObjectManager::calcPosition()
     CircleData* particles = static_cast<CircleData*>(info);
     unsigned int count = objMap[Shape::CIRCLE]->getCount();
 
-    for (int pos = 0; pos < count; pos++)
+    for (unsigned int pos = 0; pos < count; pos++)
     {
 
         float vX{ particles[pos].data.m_velocity.x }, vY(particles[pos].data.m_velocity.y);
@@ -51,7 +51,7 @@ void ObjectManager::calcVelocity()
     CircleData* particles = static_cast<CircleData*>(info);
     unsigned int count = objMap[Shape::CIRCLE]->getCount();
 
-    for (int pos = 0; pos < count; pos++)
+    for (unsigned int pos = 0; pos < count; pos++)
     {
 		float aX{ particles[pos].data.m_accelaration.x }, aY(particles[pos].data.m_accelaration.y);
 		glm::vec3 velocity = glm::vec3(aX * TIMESTEP, aY * TIMESTEP, 0);
@@ -77,7 +77,7 @@ void ObjectManager::calcAccelaration()
     CircleData* particles = static_cast<CircleData*>(info);
     unsigned int count = objMap[Shape::CIRCLE]->getCount();
 
-    for (int pos = 0; pos < count; pos++)
+    for (unsigned int pos = 0; pos < count; pos++)
     {
             //for now just gravity
             if (particles[pos].data.m_position.y < -0.8f)
@@ -101,9 +101,9 @@ void ObjectManager::calcAdjacencyMatrix()
     CircleData* particles = static_cast<CircleData*>(info);
     unsigned int count = objMap[Shape::CIRCLE]->getCount();
 
-    for (int i = 0; i < count; i++)
+    for (unsigned int i = 0; i < count; i++)
     {
-        for (int j = i + 1; j < count; j++)
+        for (unsigned int j = i + 1; j < count; j++)
         {
             float dx = (particles[i].data.m_position.x - particles[j].data.m_position.x) * SCREEN_WIDTH / 2.0;
             float dy = (particles[i].data.m_position.y - particles[j].data.m_position.y) * SCREEN_HEIGHT / 2.0;
@@ -132,9 +132,9 @@ void ObjectManager::collisionCheck()
     calcAdjacencyMatrix();
     std::vector<std::pair<unsigned int, unsigned int>> collindingPairs;
 
-    for (int i = 0; i < count; i++)
+    for (unsigned int i = 0; i < count; i++)
     {
-        for (int j = i + 1; j < count; j++)
+        for (unsigned int j = i + 1; j < count; j++)
         {
             if (adjacancyMatrix[i][j] <= particles[i].m_radius + particles[j].m_radius && adjacancyMatrix[i][j] >= 0)
             {
@@ -144,7 +144,7 @@ void ObjectManager::collisionCheck()
         }
     }
 
-    for (int pos = 0; pos < count; pos++)
+    for (unsigned int pos = 0; pos < count; pos++)
     {
 
 			bool WallCollisiony = (particles[pos].data.m_position.y <= -1.0f && particles[pos].data.m_velocity.y < 0) || 

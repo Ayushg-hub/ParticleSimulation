@@ -11,6 +11,13 @@ class ParticleSimulation:public SimulationIface
 {
 	const std::string Type = "PARTICLE";
 	ObjectManager objMgr;
+	IDs CircleID;
+
+	unsigned int circleSizes[4];
+	float barPositions[4];
+	
+	glm::mat4 transform;
+	unsigned int transformLoc;//location of the transform matrix in the shader
 
 public:
 	ParticleSimulation();

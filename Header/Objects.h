@@ -16,8 +16,8 @@ struct ObjData
 enum class circleType
 {
 	NORMAL = 0,
-	GRAVITY = 1,
-	NORMAL_STATIONARY = 2,
+	NORMAL_STATIONARY = 1,
+	GRAVITY = 2,
 	GRAVITY_STATIONARY = 3
 };
 
