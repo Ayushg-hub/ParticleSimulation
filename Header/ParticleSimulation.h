@@ -3,7 +3,6 @@
 #include<GLFW/glfw3.h>
 #include"SimulationIface.h"
 #include"parameters.h"
-#include"particle.h"
 #include<iostream>
 #include"ObjectManager.h"
 
@@ -24,7 +23,7 @@ public:
 	ParticleSimulation(const ParticleSimulation&) = delete;
 	ParticleSimulation operator=(const ParticleSimulation&) = delete;
 
-	void InputEventHandler() override;
+	UserIface* InputEventHandler() override;
 	void UpdateVertexBuffers() override;
 	void render() override;
 	std::string getType() override { return Type; }

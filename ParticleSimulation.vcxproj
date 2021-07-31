@@ -167,6 +167,7 @@
     </CudaCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\mouse.cpp" />
     <ClCompile Include="Source\ObjectManager.cpp" />
     <ClCompile Include="Source\Circle.cpp" />
     <ClCompile Include="Source\Objects.cpp" />

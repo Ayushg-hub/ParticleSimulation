@@ -1,5 +1,4 @@
-﻿#include<iostream>
-#include"Header/Renderer.h"
+﻿#include"Header/Renderer.h"
 
 int main(void)
 {

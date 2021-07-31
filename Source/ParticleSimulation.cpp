@@ -76,10 +76,10 @@ ParticleSimulation::ParticleSimulation() : objMgr()
     
     float vertices[] =
     {
-		-1.0f,                 1.0f, 0.47f, 0.47f, 0.47f,
-		-1.0f,                -1.0f, 0.47f, 0.47f, 0.47f,
-		-1.0f + 5.0f / 320.0f,-1.0f, 0.47f, 0.47f, 0.47f,
-		-1.0f + 5.0f / 320.0f, 1.0f, 0.47f, 0.47f, 0.47f,
+        -2.5f / 320.0f, 1.0f, 0.47f, 0.47f, 0.47f,
+        -2.5f / 320.0f,-1.0f, 0.47f, 0.47f, 0.47f,
+		 2.5f / 320.0f,-1.0f, 0.47f, 0.47f, 0.47f,
+		 2.5f / 320.0f, 1.0f, 0.47f, 0.47f, 0.47f,
     };
     
     unsigned int indices[] =
@@ -178,8 +178,34 @@ ParticleSimulation::ParticleSimulation() : objMgr()
 
 }
 
-void ParticleSimulation::InputEventHandler()
+UserIface* ParticleSimulation::InputEventHandler()
 {
+    Mouse& mouse = Mouse::getInstance();
+
+    mouseModes mMode = mouse.getMouseMode();
+    mousePos mPos = mouse.getMousePosition();
+    unsigned int count = mouse.getPressCount();
+
+    if (mMode == mouseModes::PRESSED && count % 5 == 0)
+    {
+        if (mPos.x < 1600)
+        {
+            
+            //setting the right coordinate system
+            mPos.x = mPos.x - SIM_VIEW_WIDTH / 2;
+            mPos.y = -(mPos.y - SIM_VIEW_HEIGHT / 2);
+
+            //normalizing
+            mPos.x = mPos.x / (float)(SIM_VIEW_WIDTH / 2);
+            mPos.y = mPos.y / (float)(SIM_VIEW_HEIGHT / 2);
+
+            injectParticles(mPos.x, mPos.y);
+            std::cout << "   CURRENTLY PRESSED" << std::endl;
+        }
+        
+    }
+
+    return this;
 }
 
 void ParticleSimulation::UpdateVertexBuffers()
@@ -209,64 +235,65 @@ void ParticleSimulation::renderUI()
     glUseProgram(ID.shaderProgram);
 
     transform = glm::mat4(1.0f);
+    transform = glm::translate(transform, glm::vec3(-0.9921875f, 0.0f, 0.0f));
     glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(transform));
 
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
     //now the size bars
     transform = glm::mat4(1.0f);
-    transform = glm::translate(transform, glm::vec3(0.75f, 0.75f, 0.0f));
-    transform = glm::scale(transform, glm::vec3(0.25f, 0.125f, 1.0f));
+    transform = glm::translate(transform, glm::vec3(0.5f, 0.75f, 0.0f));
+    transform = glm::scale(transform, glm::vec3(0.5f, 0.125f, 1.0f));
     glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(transform));
 
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
     transform = glm::mat4(1.0f);
-    transform = glm::translate(transform, glm::vec3(0.75f, 0.25f, 0.0f));
-    transform = glm::scale(transform, glm::vec3(0.25f, 0.125f, 1.0f));
+    transform = glm::translate(transform, glm::vec3(0.5f, 0.25f, 0.0f));
+    transform = glm::scale(transform, glm::vec3(0.5f, 0.125f, 1.0f));
     glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(transform));
 
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
     transform = glm::mat4(1.0f);
-    transform = glm::translate(transform, glm::vec3(0.75f,-0.25f, 0.0f));
-    transform = glm::scale(transform, glm::vec3(0.25f, 0.125f, 1.0f));
+    transform = glm::translate(transform, glm::vec3(0.5f,-0.25f, 0.0f));
+    transform = glm::scale(transform, glm::vec3(0.5f, 0.125f, 1.0f));
     glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(transform));
 
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
     transform = glm::mat4(1.0f);
-    transform = glm::translate(transform, glm::vec3(0.75f,-0.75f, 0.0f));
-    transform = glm::scale(transform, glm::vec3(0.25f, 0.125f, 1.0f));
+    transform = glm::translate(transform, glm::vec3(0.5f,-0.75f, 0.0f));
+    transform = glm::scale(transform, glm::vec3(0.5f, 0.125f, 1.0f));
     glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(transform));
 
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
     //scroll marker for the side bars
     transform = glm::mat4(1.0f);
-    transform = glm::translate(transform, glm::vec3(0.5f, 0.0f, 0.0f));
-    transform = glm::scale(transform, glm::vec3(5, 0.01f, 1.0f));
+    transform = glm::translate(transform, glm::vec3(0.5f, 0.75f, 0.0f));
+    transform = glm::scale(transform, glm::vec3(8, 0.01f, 1.0f));
     glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(transform));
 
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
     transform = glm::mat4(1.0f);
-    transform = glm::translate(transform, glm::vec3(0.75f, 0.25f, 0.0f));
-    transform = glm::scale(transform, glm::vec3(5, 0.01f, 1.0f));
+    transform = glm::translate(transform, glm::vec3(0.5f, 0.25f, 0.0f));
+    transform = glm::scale(transform, glm::vec3(8, 0.01f, 1.0f));
     glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(transform));
 
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
     transform = glm::mat4(1.0f);
-    transform = glm::translate(transform, glm::vec3(0.75f, -0.25f, 0.0f));
-    transform = glm::scale(transform, glm::vec3(5, 0.01f, 1.0f));
+    transform = glm::translate(transform, glm::vec3(0.5f, -0.25f, 0.0f));
+    transform = glm::scale(transform, glm::vec3(8, 0.01f, 1.0f));
     glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(transform));
 
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
     transform = glm::mat4(1.0f);
-    transform = glm::translate(transform, glm::vec3(0.75f, -0.75f, 0.0f));
-    transform = glm::scale(transform, glm::vec3(5, 0.01f, 1.0f));
+    transform = glm::translate(transform, glm::vec3(0.5f, -0.75f, 0.0f));
+    transform = glm::scale(transform, glm::vec3(8, 0.01f, 1.0f));
     glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(transform));
 
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
