@@ -1,5 +1,5 @@
 #pragma once
-#include"UserIface.h"
+#include"..\Header\ParticleSimulation.h"
 class HomeIface:public UserIface
 {
 	float vertexBuffer[12*2] = {
@@ -33,7 +33,7 @@ class HomeIface:public UserIface
 public:
 
 	HomeIface();
-    void InputEventHandler() override;
+	UserIface* InputEventHandler() override;
 	void UpdateVertexBuffers() override;
 	void render() override;
 	IfaceType getIfaceType() override;

@@ -68,8 +68,32 @@ HomeIface::HomeIface()
 
 }
 
-void HomeIface::InputEventHandler()
+UserIface* HomeIface::InputEventHandler()
 {
+	Mouse& mouse = Mouse::getInstance();
+
+	mouseModes mMode = mouse.getMouseMode();
+	mousePos mPos = mouse.getMousePosition();
+	//unsigned int count = mouse.getPressCount();
+
+	if (mMode == mouseModes::PRESSED)
+	{
+		//setting the right coordinate system
+		mPos.x = mPos.x - SCREEN_WIDTH / 2;
+		mPos.y = -(mPos.y - SCREEN_HEIGHT / 2);
+
+		//normalizing
+		mPos.x = mPos.x / (float)(SCREEN_WIDTH / 2);
+		mPos.y = mPos.y / (float)(SCREEN_HEIGHT / 2);
+
+		if (mPos.x >= -0.8f && mPos.x <= -0.4f && mPos.y >= -0.2f && mPos.y <= 0.2f)
+		{
+			return new ParticleSimulation();
+			//HomeIface* P = static_cast<HomeIface*>(UI);
+		}
+	}
+
+	return this;
 }
 
 void HomeIface::UpdateVertexBuffers()

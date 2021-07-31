@@ -1,6 +1,5 @@
 #include "..\Header\Renderer.h"
-#include"..\Header\mouse.h"
-#include"..\Header\ParticleSimulation.h"
+#include"..\Header\HomeIface.h"
 
 Renderer::Renderer()
 {
@@ -11,10 +10,10 @@ Renderer::Renderer()
 
 
     /* Create a windowed mode window and its OpenGL context */
-    window = glfwCreateWindow(1920, 1080, "Hello World", NULL, NULL);
+    window = glfwCreateWindow(1920, 1080, "Hello World", glfwGetPrimaryMonitor(), NULL);
 
     //setting callbacks
-    glfwSetMouseButtonCallback(window, mouseButtonCallback);
+    glfwSetMouseButtonCallback(window, Mouse::mouseButtonCallback);
 
     if (!window)
     {
@@ -42,8 +41,6 @@ void Renderer::Start()
     {
         glClear(GL_COLOR_BUFFER_BIT);
 
-        handleMouseInputEvent(window, &UI);
-
         /* 
         * cuda code - keep this here for later integration
         calculations using cuda
@@ -64,6 +61,15 @@ void Renderer::Start()
         cudaMemcpy(vertexbufferdata, d_vertexbufferdata, MAX_PARTICLES * ((NOOFTRIANGLES + 1) * 2) * sizeof(float), cudaMemcpyDeviceToHost);
          
         */
+
+        Mouse::getInstance().update(window);
+
+        UserIface* temp = UI->InputEventHandler();
+        if (temp != UI)
+        {
+            delete(UI);
+            UI = temp;
+        }
 
         UI->UpdateVertexBuffers();
         UI->render();

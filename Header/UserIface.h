@@ -2,6 +2,7 @@
 #include<glew/include/GL/glew.h>
 #include<GLFW/glfw3.h>
 #include<iostream>
+#include"../Header/mouse.h"
 
 enum class IfaceType
 {
@@ -27,7 +28,7 @@ protected:
 
 public:
 	
-	virtual void InputEventHandler() = 0;
+	virtual UserIface* InputEventHandler() = 0;
 	virtual void UpdateVertexBuffers() = 0;
 	virtual void render() = 0;
 	virtual IfaceType getIfaceType() = 0;
