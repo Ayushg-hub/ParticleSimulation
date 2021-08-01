@@ -186,7 +186,7 @@ ParticleSimulation::ParticleSimulation() : objMgr()
 
 bool checkHoverOnMarker(float x,float y,float barPos)
 {
-    std::cout << "(" << x << "," << y << ")" << std::endl;
+    //std::cout << "(" << x << "," << y << ")" << std::endl;
     if (x <= 0.5625 && x >= 0.4375 && y <= (barPos + 0.01) && y >= (barPos - 0.01))
     {
         return true;
@@ -241,20 +241,30 @@ UserIface* ParticleSimulation::InputEventHandler()
         }
 
 
-        if (mMode == mouseModes::PRESSED && h != -1) 
+        if (mMode == mouseModes::PRESSED ) 
         {
+            if (mPos.x < 0 && mPos.x > -0.5)
+            {
+                if (mPos.y > 0.5) typeSelected = circleType::NORMAL;
+                else if (mPos.y > 0) typeSelected = circleType::NORMAL_STATIONARY;
+                else if(mPos.y > -0.5) typeSelected = circleType::GRAVITY;
+                else typeSelected = circleType::GRAVITY_STATIONARY;
+            }
 
-            if (mPos.y < +(0.75 - h * 0.5) + 0.125 && mPos.y >= (0.75 - h * 0.5) - 0.125)
+            if (h != -1)
             {
-                barPositions[h] = mPos.y;
-            }
-            else if (mPos.y >= (0.75 - h * 0.5) - 0.125)
-            {
-                barPositions[h] = (0.75 - h * 0.5) + 0.125;
-            }
-            else
-            {
-                barPositions[h] = (0.75 - h * 0.5) - 0.125;
+                if (mPos.y < +(0.75 - h * 0.5) + 0.125 && mPos.y >= (0.75 - h * 0.5) - 0.125)
+                {
+                    barPositions[h] = mPos.y;
+                }
+                else if (mPos.y >= (0.75 - h * 0.5) - 0.125)
+                {
+                    barPositions[h] = (0.75 - h * 0.5) + 0.125;
+                }
+                else
+                {
+                    barPositions[h] = (0.75 - h * 0.5) - 0.125;
+                }
             }
         }
 
@@ -413,7 +423,7 @@ void ParticleSimulation::renderSIM()
 void ParticleSimulation::injectParticles(float x, float y)
 {
 
-    objMgr.injectParticles(x, y,circleSizes[static_cast<int>(typeSelected)]);
+    objMgr.injectParticles(x, y,circleSizes[static_cast<int>(typeSelected)], static_cast<int>(typeSelected));
 }
 
 

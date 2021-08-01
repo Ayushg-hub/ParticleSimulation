@@ -18,7 +18,7 @@ public:
 	Shape getShape() override;
 	void* getInfo() override;
 	unsigned int getCount() override;
-	void injectParticles(float x, float y,float size) override;
+	void injectParticles(float x, float y,float size,unsigned int type) override;
 
 	void updateInstanceBuffer();
 	~Circles();

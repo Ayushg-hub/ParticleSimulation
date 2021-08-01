@@ -23,6 +23,10 @@ void ObjectManager::calcPosition()
 
     for (unsigned int pos = 0; pos < count; pos++)
     {
+        if (particles[pos].type == circleType::GRAVITY_STATIONARY || particles[pos].type == circleType::NORMAL_STATIONARY)
+        {
+            continue;
+        }
 
         float vX{ particles[pos].data.m_velocity.x }, vY(particles[pos].data.m_velocity.y);
         glm::vec3 dist = glm::vec3(vX * TIMESTEP + 0.5f * particles[pos].data.m_accelaration.x * TIMESTEP * TIMESTEP,
@@ -53,6 +57,11 @@ void ObjectManager::calcVelocity()
 
     for (unsigned int pos = 0; pos < count; pos++)
     {
+        if (particles[pos].type == circleType::GRAVITY_STATIONARY || particles[pos].type == circleType::NORMAL_STATIONARY)
+        {
+            continue;
+        }
+
 		float aX{ particles[pos].data.m_accelaration.x }, aY(particles[pos].data.m_accelaration.y);
 		glm::vec3 velocity = glm::vec3(aX * TIMESTEP, aY * TIMESTEP, 0);
 
@@ -79,18 +88,23 @@ void ObjectManager::calcAccelaration()
 
     for (unsigned int pos = 0; pos < count; pos++)
     {
-            //for now just gravity
-            if (particles[pos].data.m_position.y < -0.8f)
-            {
-                particles[pos].data.m_accelaration = glm::vec3(0.0f, 0.0f, 0.0f);
-            }
-            else
-            {
-                if (pos % 2 == 0)
-                    particles[pos].data.m_accelaration = glm::vec3(0.0f, 0.5f, 0.0f);
-                else
-                    particles[pos].data.m_accelaration = glm::vec3(0.0f, -0.5f, 0.0f);
-            }
+		if (particles[pos].type == circleType::GRAVITY_STATIONARY || particles[pos].type == circleType::NORMAL_STATIONARY)
+		{
+			continue;
+		}
+		//for now just gravity
+
+		if (particles[pos].data.m_position.y < -0.8f)
+		{
+			particles[pos].data.m_accelaration = glm::vec3(0.0f, 0.0f, 0.0f);
+		}
+		else
+		{
+			if (pos % 2 == 0)
+				particles[pos].data.m_accelaration = glm::vec3(0.0f, 0.5f, 0.0f);
+			else
+				particles[pos].data.m_accelaration = glm::vec3(0.0f, -0.5f, 0.0f);
+		}
         
     }
 }
@@ -189,9 +203,9 @@ void ObjectManager::collisionCheck()
     }
 }
 
-void ObjectManager::injectParticles(float x, float y,float size)
+void ObjectManager::injectParticles(float x, float y,float size,unsigned int type)
 {
-    objMap[Shape::CIRCLE]->injectParticles(x,y,size);
+    objMap[Shape::CIRCLE]->injectParticles(x,y,size,type);
 }
 
 ObjectManager::~ObjectManager()
