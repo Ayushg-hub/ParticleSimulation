@@ -41,6 +41,6 @@ public:
 	virtual Shape getShape() = 0;
 	virtual void* getInfo() = 0;
 	virtual unsigned int getCount() = 0;
-	virtual void  injectParticles(float x,float y) = 0;
+	virtual void  injectParticles(float x,float y,float size) = 0;
 };
 

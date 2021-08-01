@@ -189,9 +189,9 @@ void ObjectManager::collisionCheck()
     }
 }
 
-void ObjectManager::injectParticles(float x, float y)
+void ObjectManager::injectParticles(float x, float y,float size)
 {
-    objMap[Shape::CIRCLE]->injectParticles(x,y);
+    objMap[Shape::CIRCLE]->injectParticles(x,y,size);
 }
 
 ObjectManager::~ObjectManager()

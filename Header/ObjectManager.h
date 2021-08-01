@@ -20,7 +20,7 @@ public :
 
 	void calcAdjacencyMatrix();
 	void collisionCheck();
-	void injectParticles(float x, float y);
+	void injectParticles(float x, float y,float size);
 	~ObjectManager();
 };
 

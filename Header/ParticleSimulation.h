@@ -6,20 +6,17 @@
 #include<iostream>
 #include"ObjectManager.h"
 
-#define UI_VIEW_WIDTH 320
-#define UI_VIEW_HEIGHT 1080
-
 class ParticleSimulation:public SimulationIface
 {
 	const std::string Type = "PARTICLE";
 	ObjectManager objMgr;
 	IDs CircleID;
 
-	unsigned int circleSizes[4];
+	float circleSizes[4];
 	float barPositions[4];
 	bool hover[4];
 	int markerSelected{-1};
-	circleType typeSelected;
+	circleType typeSelected{circleType::NORMAL};
 	
 	glm::mat4 transform;
 	unsigned int transformLoc;//location of the transform matrix in the shader
