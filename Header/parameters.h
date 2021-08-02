@@ -3,10 +3,12 @@
 #define CIRCLESIZE 5
 #define NOOFTRIANGLES 30
 #define PI std::acos(-1)
-#define TIMESTEP 0.005f
+#define TIMESTEP 0.0025f
 #define MAX_CIRCLES 3200
 #define MAX_GRAVITY_CIRCLES 3200
 #define FULLSCREEN false
+#define GRAVITATIONAL_CONSTANT 0.0025
+#define GRAVITY_EFFECT false
 
 #if FULLSCREEN
 #define SCREEN_HEIGHT 1080

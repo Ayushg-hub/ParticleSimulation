@@ -88,6 +88,15 @@ void ObjectManager::calcAccelaration()
     CircleData* particles = static_cast<CircleData*>(info);
     unsigned int count = objMap[Shape::CIRCLE]->getCount();
 
+    std::vector<CircleData> gravityPos;
+    for (unsigned int pos = 0; pos < count; pos++)
+    {
+        if (particles[pos].type == circleType::GRAVITY_STATIONARY || particles[pos].type == circleType::GRAVITY)
+        {
+            gravityPos.push_back(particles[pos]);
+        }
+    }
+
     for (unsigned int pos = 0; pos < count; pos++)
     {
 		if (particles[pos].type == circleType::GRAVITY_STATIONARY || particles[pos].type == circleType::NORMAL_STATIONARY)
@@ -102,10 +111,36 @@ void ObjectManager::calcAccelaration()
 		}
 		else
 		{
-			if (pos % 2 == 0)
+			/*if (pos % 2 == 0)
 				particles[pos].data.m_accelaration = glm::vec3(0.0f, 0.5f, 0.0f);
 			else
-				particles[pos].data.m_accelaration = glm::vec3(0.0f, -0.5f, 0.0f);
+				particles[pos].data.m_accelaration = glm::vec3(0.0f, -0.5f, 0.0f);*/
+            if (GRAVITY_EFFECT)
+            {
+                particles[pos].data.m_accelaration = glm::vec3(0.0f, -0.5f, 0.0f);
+            }
+            else
+            {
+                particles[pos].data.m_accelaration = glm::vec3(0.0f, 0.0f, 0.0f);
+            }
+            glm::vec3 dir;
+            for (auto itr : gravityPos)
+            {
+                float dx = (itr.data.m_position.x - particles[pos].data.m_position.x) * SCREEN_WIDTH / 2.0;
+                float dy = (itr.data.m_position.y - particles[pos].data.m_position.y) * SCREEN_HEIGHT / 2.0;
+                float sqrt_ = std::sqrt(dx * dx + dy * dy);
+
+                if (sqrt_ < itr.m_radius + particles[pos].m_radius)
+                    continue;
+
+                dir = itr.data.m_position - particles[pos].data.m_position;
+                float norm = glm::l2Norm(dir);
+
+                float magnitude = GRAVITATIONAL_CONSTANT * itr.data.mass / (norm*norm);
+                dir = glm::normalize(dir);
+                particles[pos].data.m_accelaration += magnitude * dir;
+
+            }
 		}
         
     }
