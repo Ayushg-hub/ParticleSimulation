@@ -40,8 +40,10 @@ Circles::Circles()
         "#version 330 core\n"
         "layout(location = 0) in vec2 position;\n"
         "layout(location = 1) in vec2 offset;\n"
+        "layout(location = 2) in float size;"
         "void main(){\n"
-        "gl_Position = vec4(position + offset,1,1);\n"
+        "vec2 pos = (position*size + offset);\n"
+        "gl_Position = vec4(pos,1,1);\n"
         "}\0\n";
 
     const char* fragmentshader =
@@ -113,8 +115,11 @@ Circles::Circles()
     
     //creating attrib pointers for the current buffer
     glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glVertexAttribDivisor(1, 1);
+    glEnableVertexAttribArray(2);
+    glVertexAttribPointer(2, 1, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)(2 * sizeof(float)));
+    glVertexAttribDivisor(2, 1);
 
     glUseProgram(ID.shaderProgram);
     glBindVertexArray(0);
@@ -135,7 +140,7 @@ void Circles::draw()
     glBindVertexArray(ID.VAO);
     glUseProgram(ID.shaderProgram);
 
-    GLCALL(glBufferData(GL_ARRAY_BUFFER, count * 2 * sizeof(float), positions, GL_STATIC_DRAW));
+    GLCALL(glBufferData(GL_ARRAY_BUFFER, count * 3 * sizeof(float), instanceData, GL_STATIC_DRAW));
     GLCALL(glDrawElementsInstanced(GL_TRIANGLES, NOOFTRIANGLES * 3, GL_UNSIGNED_INT, 0, count));
 
     glBindVertexArray(0);
@@ -144,50 +149,92 @@ void Circles::draw()
     glUseProgram(0);
 }
 
-void Circles::injectParticles(float x, float y)
+void Circles::injectParticles(float x, float y,float size, unsigned int type)
 {
     if (count == MAX_PARTICLES)
         return;
+    circleType ctype = static_cast<circleType>(type);
+
+    if (ctype == circleType::NORMAL_STATIONARY || ctype == circleType::GRAVITY_STATIONARY)
+    {
+        circles[count].m_radius = CIRCLESIZE * size;
+        circles[count].data.m_position = glm::vec3(x , y, 1.0);
+        circles[count].type = ctype;
+        circles[count].data.mass = size*size;
+        circles[count].data.m_velocity = glm::vec3(0.0, 0.0, 0.0);
+
+        instanceData[3 * count] = circles[count].data.m_position.x;
+        instanceData[3 * count + 1] = circles[count].data.m_position.y;
+        instanceData[3 * count + 2] = size;
+        count++;
+    }
+    else
+    {
+        for (unsigned int i = 0; i < 5; i++)
+        {
+            circles[count].m_radius = CIRCLESIZE * size;
+            circles[count].data.m_position = glm::vec3(x - (float)2.0 * circles[count].m_radius * (10.0 - i * 5.0) / (SIM_VIEW_WIDTH / 2), y, 1.0);
+            circles[count].type = ctype;
+            circles[count].data.mass = size * size;
+
+            instanceData[3 * count] = circles[count].data.m_position.x;
+            instanceData[3 * count + 1] = circles[count].data.m_position.y;
+            instanceData[3 * count + 2] = size;
+            count++;
+        }
+    }
+
+    
 
     //circles[count].data.injected = true;
-    circles[count].data.m_position = glm::vec3(x - (float)2.0 * CIRCLESIZE * 10.0 / (SIM_VIEW_WIDTH / 2), y, 1.0);
+    //circles[count].data.m_position = glm::vec3(x - (float)2.0 * CIRCLESIZE * 10.0 / (SIM_VIEW_WIDTH / 2), y, 1.0);
+    //circles[count].m_radius = CIRCLESIZE * size;
 
-    positions[2 * count] = circles[count].data.m_position.x;
-    positions[2 * count + 1] = circles[count].data.m_position.y;
+    //instanceData[3 * count] = circles[count].data.m_position.x;
+    //instanceData[3 * count + 1] = circles[count].data.m_position.y;
+    //instanceData[3 * count + 2] = size;
 
-    count++;
+    //count++;
 
-    //circles[count].data.injected = true;
-    circles[count].data.m_position = glm::vec3(x - (float)2.0 * CIRCLESIZE * 5.0 / (SIM_VIEW_WIDTH / 2), y, 1.0);
+    ////circles[count].data.injected = true;
+    //circles[count].data.m_position = glm::vec3(x - (float)2.0 * CIRCLESIZE * 5.0 / (SIM_VIEW_WIDTH / 2), y, 1.0);
+    //circles[count].m_radius = CIRCLESIZE * size;
 
-    positions[2 * count] = circles[count].data.m_position.x;
-    positions[2 * count + 1] = circles[count].data.m_position.y;
+    //instanceData[3 * count] = circles[count].data.m_position.x;
+    //instanceData[3 * count + 1] = circles[count].data.m_position.y;
+    //instanceData[3 * count + 2] = size;
 
-    count++;
+    //count++;
 
-    //particles[count].injected = true;
-    circles[count].data.m_position = glm::vec3(x, y, 1.0);
+    ////particles[count].injected = true;
+    //circles[count].data.m_position = glm::vec3(x, y, 1.0);
+    //circles[count].m_radius = CIRCLESIZE * size;
 
-    positions[2 * count] = circles[count].data.m_position.x;
-    positions[2 * count + 1] = circles[count].data.m_position.y;
+    //instanceData[3 * count] = circles[count].data.m_position.x;
+    //instanceData[3 * count + 1] = circles[count].data.m_position.y;
+    //instanceData[3 * count + 2] = size;
 
-    count++;
+    //count++;
 
-    //particles[count].injected = true;
-    circles[count].data.m_position = glm::vec3(x + (float)2.0 * CIRCLESIZE * 5.0 / (SIM_VIEW_WIDTH/2), y, 1.0);
+    ////particles[count].injected = true;
+    //circles[count].data.m_position = glm::vec3(x + (float)2.0 * CIRCLESIZE * 5.0 / (SIM_VIEW_WIDTH/2), y, 1.0);
+    //circles[count].m_radius = CIRCLESIZE * size;
 
-    positions[2 * count] = circles[count].data.m_position.x;
-    positions[2 * count + 1] = circles[count].data.m_position.y;
+    //instanceData[3 * count] = circles[count].data.m_position.x;
+    //instanceData[3 * count + 1] = circles[count].data.m_position.y;
+    //instanceData[3 * count + 2] = size;
 
-    count++;
+    //count++;
 
-    //particles[count].injected = true;
-    circles[count].data.m_position = glm::vec3(x + (float)2.0 * CIRCLESIZE * 10.0 / (SIM_VIEW_WIDTH / 2), y, 1.0);
+    ////particles[count].injected = true;
+    //circles[count].data.m_position = glm::vec3(x + (float)2.0 * CIRCLESIZE * 10.0 / (SIM_VIEW_WIDTH / 2), y, 1.0);
+    //circles[count].m_radius = CIRCLESIZE * size;
 
-    positions[2 * count] = circles[count].data.m_position.x;
-    positions[2 * count + 1] = circles[count].data.m_position.y;
+    //instanceData[3 * count] = circles[count].data.m_position.x;
+    //instanceData[3 * count + 1] = circles[count].data.m_position.y;
+    //instanceData[3 * count + 2] = size;
 
-    count++;
+    //count++;
 
     std::cout << count;
 }
@@ -196,8 +243,8 @@ void Circles::updateInstanceBuffer()
 {
     for (unsigned int i = 0; i < count; i++)
     {
-        positions[2 * i] = circles[i].data.m_position.x;
-        positions[2 * i + 1] = circles[i].data.m_position.y;
+        instanceData[3 * i] = circles[i].data.m_position.x;
+        instanceData[3 * i + 1] = circles[i].data.m_position.y;
     }
 }
 

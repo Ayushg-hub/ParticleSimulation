@@ -13,22 +13,19 @@ ParticleSimulation::ParticleSimulation() : objMgr()
     circleSizes[static_cast<int>(circleType::GRAVITY)] = 10;
     circleSizes[static_cast<int>(circleType::GRAVITY_STATIONARY)] = 10;
 
-    barPositions[0] =  0.75;
-    barPositions[1] =  0.25;
-    barPositions[2] = -0.25;
-    barPositions[3] = -0.75;
+    barPositions[0] =  0.625;
+    barPositions[1] =  0.125;
+    barPositions[2] = -0.375;
+    barPositions[3] = -0.875;
     
 
     //shaders
     const char* vertexshader =
         "#version 330 core\n"
         "layout(location = 0) in vec2 position;\n"
-        //"layout(location = 1) in vec3 color;\n"
         "uniform mat4 transform;\n"
-        //"out vec3 vertexColor;\n"
         "void main(){\n"
         "gl_Position = transform*vec4(position,1,1);\n"
-        //"vertexColor = color;\n"
         "}\0\n";
 
     const char* fragmentshader =
@@ -233,7 +230,7 @@ UserIface* ParticleSimulation::InputEventHandler()
         mPos.x = mPos.x / (float)(UI_VIEW_WIDTH / 2);
         mPos.y = mPos.y / (float)(UI_VIEW_HEIGHT / 2);
 
-        int h = 0;
+        int h = -1;
         for (int i = 0; i < 4; i++)
         {
             hover[i] = checkHoverOnMarker(mPos.x, mPos.y,barPositions[i]);
@@ -241,20 +238,30 @@ UserIface* ParticleSimulation::InputEventHandler()
         }
 
 
-        if (mMode == mouseModes::PRESSED)
+        if (mMode == mouseModes::PRESSED ) 
         {
+            if (mPos.x < 0 && mPos.x > -0.5)
+            {
+                if (mPos.y > 0.5) typeSelected = circleType::NORMAL;
+                else if (mPos.y > 0) typeSelected = circleType::NORMAL_STATIONARY;
+                else if(mPos.y > -0.5) typeSelected = circleType::GRAVITY;
+                else typeSelected = circleType::GRAVITY_STATIONARY;
+            }
 
-            if (mPos.y < +(0.75 - h * 0.5) + 0.125 && mPos.y >= (0.75 - h * 0.5) - 0.125)
+            if (h != -1)
             {
-                barPositions[h] = mPos.y;
-            }
-            else if (mPos.y >= (0.75 - h * 0.5) - 0.125)
-            {
-                barPositions[h] = (0.75 - h * 0.5) + 0.125;
-            }
-            else
-            {
-                barPositions[h] = (0.75 - h * 0.5) - 0.125;
+                if (mPos.y < +(0.75 - h * 0.5) + 0.125 && mPos.y >= (0.75 - h * 0.5) - 0.125)
+                {
+                    barPositions[h] = mPos.y;
+                }
+                else if (mPos.y >= (0.75 - h * 0.5) - 0.125)
+                {
+                    barPositions[h] = (0.75 - h * 0.5) + 0.125;
+                }
+                else
+                {
+                    barPositions[h] = (0.75 - h * 0.5) - 0.125;
+                }
             }
         }
 
@@ -265,7 +272,13 @@ UserIface* ParticleSimulation::InputEventHandler()
 
 void ParticleSimulation::UpdateVertexBuffers()
 {
-    
+    //first set the circle size according to the markers
+    for (int i = 0; i < 4; i++)
+    {
+        circleSizes[i] = ((barPositions[i] - (0.625 - i * 0.5)) * 4 * 9 + 1);
+    }
+
+
     objMgr.calcAccelaration();
     objMgr.calcVelocity();
     objMgr.calcPosition();
@@ -281,7 +294,7 @@ void ParticleSimulation::render()
 
 void ParticleSimulation::renderUI()
 {
-    glViewport(1600, 0, 320, 1080);
+    glViewport(1600, 0, UI_VIEW_WIDTH, UI_VIEW_HEIGHT);
 
     //first draw the separating line
     glBindBuffer(GL_ARRAY_BUFFER,ID.VBO);
@@ -407,7 +420,7 @@ void ParticleSimulation::renderSIM()
 void ParticleSimulation::injectParticles(float x, float y)
 {
 
-    objMgr.injectParticles(x, y);
+    objMgr.injectParticles(x, y,circleSizes[static_cast<int>(typeSelected)], static_cast<int>(typeSelected));
 }
 
 
