@@ -23,12 +23,9 @@ ParticleSimulation::ParticleSimulation() : objMgr()
     const char* vertexshader =
         "#version 330 core\n"
         "layout(location = 0) in vec2 position;\n"
-        //"layout(location = 1) in vec3 color;\n"
         "uniform mat4 transform;\n"
-        //"out vec3 vertexColor;\n"
         "void main(){\n"
         "gl_Position = transform*vec4(position,1,1);\n"
-        //"vertexColor = color;\n"
         "}\0\n";
 
     const char* fragmentshader =

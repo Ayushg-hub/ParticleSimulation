@@ -3,7 +3,7 @@
 #define CIRCLESIZE 5
 #define NOOFTRIANGLES 30
 #define PI std::acos(-1)
-#define TIMESTEP 0.025f
+#define TIMESTEP 0.005f
 #define MAX_CIRCLES 3200
 #define MAX_GRAVITY_CIRCLES 3200
 #define FULLSCREEN false

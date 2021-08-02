@@ -160,6 +160,8 @@ void Circles::injectParticles(float x, float y,float size, unsigned int type)
         circles[count].m_radius = CIRCLESIZE * size;
         circles[count].data.m_position = glm::vec3(x , y, 1.0);
         circles[count].type = ctype;
+        circles[count].data.mass = size*size;
+        circles[count].data.m_velocity = glm::vec3(0.0, 0.0, 0.0);
 
         instanceData[3 * count] = circles[count].data.m_position.x;
         instanceData[3 * count + 1] = circles[count].data.m_position.y;
@@ -173,6 +175,7 @@ void Circles::injectParticles(float x, float y,float size, unsigned int type)
             circles[count].m_radius = CIRCLESIZE * size;
             circles[count].data.m_position = glm::vec3(x - (float)2.0 * circles[count].m_radius * (10.0 - i * 5.0) / (SIM_VIEW_WIDTH / 2), y, 1.0);
             circles[count].type = ctype;
+            circles[count].data.mass = size * size;
 
             instanceData[3 * count] = circles[count].data.m_position.x;
             instanceData[3 * count + 1] = circles[count].data.m_position.y;
